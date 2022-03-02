@@ -54,7 +54,7 @@ SOLVED
 '''
 @app.route('/drinks-detail', methods=['GET'])
 @requires_auth('get:drinks-detail')
-def get_drinks_detail():
+def get_drinks_detail(payload):
     drinks = Drink.query.all()
     all_drinks = [d.long() for d in drinks]
     return jsonify({
@@ -73,7 +73,7 @@ def get_drinks_detail():
 '''
 @app.route('/drinks', methods=['POST'])
 @requires_auth('post:drinks')
-def add_drink(jwt):
+def add_drink(payload):
     body = request.get_json()
     req_title = body.get('title', None)
     req_recipe = body.get('recipe', None)
@@ -100,7 +100,7 @@ def add_drink(jwt):
 '''
 @app.route('/drinks/<int:id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
-def edit_drinks(jwt, id):
+def edit_drinks(payload, id):
     try:
         body = request.get_json(force=True)
         title = body.get('title', None)

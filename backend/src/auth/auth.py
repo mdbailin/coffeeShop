@@ -1,3 +1,4 @@
+from curses import wrapper
 import json
 from flask import request, _request_ctx_stack
 from functools import wraps
@@ -138,7 +139,7 @@ def verify_decode_jwt(token):
                 rsa_key,
                 algorithms=ALGORITHMS,
                 audience=API_AUDIENCE,
-                issuer='https://' + AUTH0_DOMAIN + '/'
+                issuer=f'https://{AUTH0_DOMAIN}/'
             )
 
             return payload
@@ -184,6 +185,5 @@ def requires_auth(permission=''):
             payload = verify_decode_jwt(token)
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
-
         return wrapper
     return requires_auth_decorator
