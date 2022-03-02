@@ -6,7 +6,7 @@
 
 #### Python 3.7
 
-Follow instructions to install the latest version of python for your platform in the [python docs](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
+Follow instructions to install the latest version of python for your platform in the [python docs]()
 
 #### Virtual Environment
 
