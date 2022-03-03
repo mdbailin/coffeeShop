@@ -1,16 +1,17 @@
 from curses import wrapper
 import json
-from flask import request, _request_ctx_stack
+from flask import request, _request_ctx_stack, abort
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
-#login: https://dev-8a17nx61.us.auth0.com/authorize?audience=/makeCoffee&response_type=token&client_id=vYpd70IiwnPJQkws8Ax1O2qvatOcpyFU&redirect_uri=http://127.0.0.1:8100/tabs/user-page
+#login: https://dev-8a17nx61.us.auth0.com/authorize?audience=https://localhost:5000&response_type=token&client_id=vYpd70IiwnPJQkws8Ax1O2qvatOcpyFU&redirect_uri=http://127.0.0.1:8100/tabs/user-page
+       
 
 
 AUTH0_DOMAIN = 'dev-8a17nx61.us.auth0.com'
 ALGORITHMS = ['RS256']
-API_AUDIENCE = '/makeCoffee'
+API_AUDIENCE = 'https://localhost:5000'
 
 
 
@@ -41,7 +42,6 @@ def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header
     """
     auth = request.headers.get('Authorization', None)
-    print(auth)
     if not auth:
         raise AuthError({
             'code': 'authorization_header_missing',
@@ -68,6 +68,7 @@ def get_token_auth_header():
         }, 401)
 
     token = parts[1]
+    print("method accessed")
     return token
 
 '''
@@ -182,8 +183,13 @@ def requires_auth(permission=''):
         @wraps(f)
         def wrapper(*args, **kwargs):
             token = get_token_auth_header()
-            payload = verify_decode_jwt(token)
+            try:
+                payload = verify_decode_jwt(token)
+            except:
+                abort(401)
+            
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
+
         return wrapper
     return requires_auth_decorator
